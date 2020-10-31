@@ -1,35 +1,29 @@
 class HashTableEntry:
-    """
-    Linked List hash table key/value pair
-    """
     def __init__(self, key, value):
         self.key = key
         self.value = value
         self.next = None
 
-# Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
 class HashTable:
     def __init__(self, capacity):
-        self.storage = [None] * capacity
+		if capacity > MIN_CAPACITY:
+        	self.storage = [None] * capacity
+        else:
+            self.storage = [None] * MIN_CAPACITY
 
     def get_num_slots(self):
         return len(self.storage)
 
     def get_load_factor(self):
-        # load factor: a = n/m
+        # load factor = n/m
         m = len(self.storage)
         n = m - self.storage.count(None)
         return n/m
 
 
     def fnv1(self, key):
-        """
-        FNV-1 Hash, 64-bit
-
-        Implement this, and/or DJB2.
-        """
         FNV_offset_basis = 14695981039346656037
         FNV_prime = 1099511628211
 		
@@ -44,22 +38,17 @@ class HashTable:
     def djb2(self, key):
         pass
 
-
     def hash_index(self, key):
         return self.fnv1(key) % len(self.storage)
-        #return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         self.storage[self.hash_index(key)] = value
 
-
     def delete(self, key):
         self.storage[self.hash_index(key)] = None
 
-
     def get(self, key):
         return self.storage[self.hash_index(key)]
-
 
     def resize(self, new_capacity):
         """
