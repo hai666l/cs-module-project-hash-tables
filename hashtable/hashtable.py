@@ -8,10 +8,23 @@ MIN_CAPACITY = 8
 
 class HashTable:
     def __init__(self, capacity):
-		if capacity > MIN_CAPACITY:
-        	self.storage = [None] * capacity
-        else:
-            self.storage = [None] * MIN_CAPACITY
+        self.storage = [None] * capacity
+        if len(self.storage) < MIN_CAPACITY:
+           self.storage = [None] * MIN_CAPACITY
+    
+    def __str__(self):
+        out = ''
+        if self.storage:
+            for i in self.storage:
+                if i:
+                    while i != None:
+                        out += f"[\'{i.key}\', \'{i.value}\'] -> "
+                        i = i.next
+                out += 'None\n'
+            return out
+
+        out = 'Empty HashTable'
+        return out
 
     def get_num_slots(self):
         return len(self.storage)
@@ -26,13 +39,13 @@ class HashTable:
     def fnv1(self, key):
         FNV_offset_basis = 14695981039346656037
         FNV_prime = 1099511628211
-		
+        
         fnv1_hash = FNV_offset_basis
 
         for byte in key.encode():
             fnv1_hash *= FNV_prime
             fnv1_hash ^= byte
-		
+        
         return fnv1_hash
 
     def djb2(self, key):
@@ -42,13 +55,53 @@ class HashTable:
         return self.fnv1(key) % len(self.storage)
 
     def put(self, key, value):
-        self.storage[self.hash_index(key)] = value
+        # Grab first entry in ll @ index
+        e = self.storage[self.hash_index(key)]
+        if e == None:
+            # If index is not occupied, add new entry
+            self.storage[self.hash_index(key)] = HashTableEntry(key, value)
+
+        # While index is occupied
+        while e != None:
+
+            # If entry already exists
+            if e.key == key:
+                # Update with new value
+                e.value = value
+                return
+
+            # if next pointer is None, add new entry
+            if e.next == None:
+                e.next = HashTableEntry(key, value)
+                return
+            
+            # Go to next
+            e = e.next
 
     def delete(self, key):
-        self.storage[self.hash_index(key)] = None
+        # Grab first entry in ll @ index
+        e = self.storage[self.hash_index(key)]
+        if e and e.key == key:
+            self.storage[self.hash_index(key)] = e.next
+
+        while e != None: 
+            if e.next != None and e.next.key == key:
+                e.next = e.next.next
+            e = e.next
 
     def get(self, key):
-        return self.storage[self.hash_index(key)]
+        # Grab first entry in ll @ index
+        e = self.storage[self.hash_index(key)]
+        # If entry is not None
+        if e:
+            # Loop thru ll until entry is none
+            while e != None:
+                # OR if we find matching key, return value
+                if e.key == key:
+                    return e.value
+                e = e.next
+        # No match found or invalid key, return None
+        return None
 
     def resize(self, new_capacity):
         """
