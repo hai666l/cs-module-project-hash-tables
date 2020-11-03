@@ -8,6 +8,7 @@ MIN_CAPACITY = 8
 
 class HashTable:
     def __init__(self, capacity):
+        self.capacity = capacity
         self.storage = [None] * capacity
         if len(self.storage) < MIN_CAPACITY:
            self.storage = [None] * MIN_CAPACITY
@@ -110,8 +111,12 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        oldStorage = self.storage
+        self.__init__(new_capacity)
+        for e in oldStorage:
+            while e != None:
+                self.put(e.key, e.value)
+                e = e.next
 
 
 if __name__ == "__main__":
@@ -134,7 +139,6 @@ if __name__ == "__main__":
     print("self.storage:")
     print(ht.storage)
 
-    """
     # Test storing beyond capacity
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
@@ -151,4 +155,3 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     print("")
-    """
