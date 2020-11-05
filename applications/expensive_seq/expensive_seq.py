@@ -1,10 +1,14 @@
-# Your code here
-
+cache = dict()
 
 def expensive_seq(x, y, z):
-    # Your code here
-
-
+    if (x, y, z) in cache:
+        return cache[(x, y, z)]
+    if x <= 0:
+        r = y + z
+    if x > 0:
+        r = expensive_seq(x-1,y+1,z) + expensive_seq(x-2,y+2,z*2) + expensive_seq(x-3,y+3,z*3)
+    cache[(x,y,z)] = r
+    return r
 
 if __name__ == "__main__":
     for i in range(10):
