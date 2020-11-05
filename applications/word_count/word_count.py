@@ -2,19 +2,15 @@ def word_count(s):
     s = s.lower()
     ignore = ['"', ':', ';', ',', '.', '-', '+', '=', '/', '\\', '|', '[', ']', '{', '}', '(', ')', '*', '^', '&' ]
 
-    # Split string by spaces and NULL terminator into a list, remove ignore chars from each word in that list
+    for c in ignore:
+        s = s.replace(c, '')
     words = s.split()
-    for i in range(0, len(words)):
-        for c in ignore:
-            words[i] = words[i].replace(c, '')
 
-    # Prepare a dict count of each word in the list 
-    out = {}
-    for word in words:
-        if word != "":
-            out[word] = words.count(word)
+    d = {}
+    for w in words:
+        d[w] = words.count(w)
 
-    return out
+    return d
 
 if __name__ == "__main__":
     print(word_count(""))
