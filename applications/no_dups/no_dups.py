@@ -1,12 +1,10 @@
 def no_dups(s):
     words = s.split()
     s = ""
-
     for w in words:
         if s.find(w) == -1:
             s += w
             s += ' '
-
     return s[:-1]
 
 if __name__ == "__main__":
